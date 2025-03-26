@@ -43,9 +43,6 @@ async def url(ctx, url: str = "nothing"):
     await ctx.send(f"Set website to: {website} 😊")
     result = check_product(url)
     send_webhook_message(result)
-
-@bot.command()
-async def HardR(ctx, bet: int = 10):
     
 
 WEBHOOK_URL = "https://discord.com/api/webhooks/1353843712630849666/ct-QDBjeJ1muFzBVk5IdIMSz_8_F-9neeXs7ddfab9-26GHGnMlRshnOziYmjzuz_UiO"
