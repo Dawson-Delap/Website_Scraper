@@ -3,6 +3,7 @@ import requests
 import json
 import time
 import threading
+import random
 from bs4 import BeautifulSoup
 from discord.ext import commands
 
@@ -12,6 +13,7 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 result = "woah"
+money = 100
 @bot.event
 async def on_ready():
     channel = bot.get_channel(1353899972860444714)  # Replace with your channel ID
@@ -33,7 +35,45 @@ async def on_message(message):
         await message.channel.send("https://tenor.com/view/low-tier-god-awesome-mario-twerking-gif-23644561")
 
     await bot.process_commands(message)  
-website = "https://www.bestbuy.com/site/asus-zenbook-s-14-14-3k-oled-touch-laptop-copilot-pc-intel-core-ultra-7-16gb-memory-1tb-ssd-zumaia-gray/6595522.p?skuId=6595522"
+website = "https://www.bestbuy.com/site/toshiba-65-class-c350-series-led-4k-uhd-smart-fire-tv/6532123.p?skuId=6532123"
+@bot.command()
+async def slots(ctx, bet: int = 10):
+    global money
+    slot1 = 0
+    slot2 = 0
+    slot3 = 0
+    await ctx.send("|V|V|V|")
+    msg = await ctx.send("|0|0|0|")
+    await ctx.send("|V|V|V|")
+    time.sleep(.3)
+    slot1 = random.randint(1, 3)
+    await msg.edit(content=f"|{slot1}|0|0|")
+    time.sleep(.3)
+    slot2 = random.randint(1, 3)
+    await msg.edit(content=f"|{slot1}|{slot2}|0|")
+    time.sleep(.3)
+    slot3 = random.randint(1, 3)
+    await msg.edit(content=f"|{slot1}|{slot2}|{slot3}|")
+    time.sleep(.3)
+    if slot1 == slot2 and slot2 == slot3:
+        await ctx.send(f"YOU WON!!!! +${bet}")
+        money += bet
+        await ctx.send(f"Money: {money}")
+    else:
+        await ctx.send(f"You Lost ;( -${bet}")
+        money -= bet
+        await ctx.send(f"Money: ${money}")
+@bot.command()
+async def money34(ctx, bet: int = 10):
+    global money
+    money += 1000000
+    await ctx.send(f"Money: ${money}")
+    
+@bot.command()
+async def checkmoney(ctx, bet: int = 10):
+    global money
+    await ctx.send(f"Money: ${money}")
+
 @bot.command()
 async def url(ctx, url: str = "nothing"):
     website = url
