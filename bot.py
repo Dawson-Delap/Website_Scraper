@@ -26,6 +26,9 @@ async def on_message(message):
     if message.author == bot.user:
         return  
     
+    if "dawson" in message.content.lower():
+        await message.channel.send(f"Gooner")  
+
     if "elon" in message.content.lower():
         await message.channel.send(f"L {message.author.display_name}")  
 
