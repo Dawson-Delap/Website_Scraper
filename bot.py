@@ -33,7 +33,7 @@ async def on_message(message):
         await message.channel.send(f"L {message.author.display_name}")  
 
     if "black" in message.content.lower():
-        await message.channel.send(f"{message.author.display_name} is a nigger") 
+        await message.channel.send(f"{message.author.display_name} is a basketball person") 
 
     if "something" in message.content.lower():
         await message.channel.send("https://tenor.com/view/low-tier-god-awesome-mario-twerking-gif-23644561")
