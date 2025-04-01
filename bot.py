@@ -26,14 +26,11 @@ async def on_message(message):
     if message.author == bot.user:
         return  
     
-    if "dawson" in message.content.lower():
-        await message.channel.send(f"Gooner")  
-
     if "elon" in message.content.lower():
         await message.channel.send(f"L {message.author.display_name}")  
 
     if "black" in message.content.lower():
-        await message.channel.send(f"{message.author.display_name} is a basketball person") 
+        await message.channel.send(f"{message.author.display_name} is a nigger") 
 
     if "something" in message.content.lower():
         await message.channel.send("https://tenor.com/view/low-tier-god-awesome-mario-twerking-gif-23644561")
