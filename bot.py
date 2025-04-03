@@ -32,6 +32,65 @@ async def on_message(message):
 
     await bot.process_commands(message)  
 
+@bot.command
+async def ping(ctx):
+    await ctx.send("pong") #Copypaste for more command setup
+
+@bot.command
+async def add(ctx, a: int, b: int):
+    await ctx.send(f"The sum is {a + b}")
+
+@bot.command
+async def sub(ctx, a: int, b: int):
+    await ctx.send(f"The difference is {a - b}")
+
+@bot.command
+async def mult(ctx, a: int, b: int):
+    await ctx.send(f"The product is {a * b}")
+
+@bot.command
+async def divi(ctx, a: int, b: int):
+    await ctx.send(f"The quotient is {a // b}") 
+
+#The basic maths ^^ for ease
+
+@bot.command
+async def RR(ctx):
+    user = ctx.author
+
+    streak = streak.get(user.id, 0)
+
+    chamber = [6,5, 4, 3, 2, 1]
+
+    user_chamber = chamber[min(streak, len(chamber) - 1)]
+    user_eliminated = random.randint(1, user_chamber) == 1
+    bot_eliminated = random.randint(1) == 1
+
+    result_message = []
+
+    if user_eliminated:
+        streak[user.id] = 0
+        result_message.append(f'💥🔫 BANG! {user.mention} sucks, streak reset to 0.')
+
+    else:
+        streak[user.id] = streak + 1
+        result_message.append(f"🔫 *click*... {user.mention} survived! Streak: {streak[user.id]} 🔥")
+    
+    if bot_eliminated:
+        result_message.append(f'💥🔫 BANG! Bad luck')
+    else:
+         result_message.append(f"🔫 *click*... one less in the chamber")
+    
+    await ctx.send("\n".join(result_message))
+
+    #Code for RR before putting into bot
+
+@bot.command()
+async def streak(ctx):
+    user = ctx.author
+    user_streak = streak.get(user.id, 0)
+    await ctx.send(f"{user.mention}, your survival streak is {user_streak}!")
+
 @bot.command()
 async def slots(ctx, bet: int = 10):
     global money
