@@ -2,7 +2,7 @@ import discord
 import requests
 import json
 import time
-import threading
+import random
 from bs4 import BeautifulSoup
 from discord.ext import commands
 
@@ -10,12 +10,8 @@ from discord.ext import commands
 intents = discord.Intents.default()
 intents.message_content = True  
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="/", intents=intents)
 result = "woah"
-@bot.event
-async def on_ready():
-    channel = bot.get_channel(1353899972860444714)  # Replace with your channel ID
-    await channel.send("Hello, this is a bot message!")
 
 @bot.event
 async def on_ready():
@@ -25,9 +21,8 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return  
-    
-    if "elon" in message.content.lower():
-        await message.channel.send(f"L {message.author.display_name}")  
+    if "white" in message.content.lower():
+        await message.channel.send(f"{message.author.display_name} is a cracker")  
 
     if "black" in message.content.lower():
         await message.channel.send(f"{message.author.display_name} is a basketball person") 
@@ -36,85 +31,108 @@ async def on_message(message):
         await message.channel.send("https://tenor.com/view/low-tier-god-awesome-mario-twerking-gif-23644561")
 
     await bot.process_commands(message)  
-website = "https://www.bestbuy.com/site/asus-zenbook-s-14-14-3k-oled-touch-laptop-copilot-pc-intel-core-ultra-7-16gb-memory-1tb-ssd-zumaia-gray/6595522.p?skuId=6595522"
+
 @bot.command()
-async def url(ctx, url: str = "nothing"):
-    website = url
-    await ctx.send(f"Set website to: {website} 😊")
-    result = check_product(url)
-    send_webhook_message(result)
-    
-
-WEBHOOK_URL = "https://discord.com/api/webhooks/1353843712630849666/ct-QDBjeJ1muFzBVk5IdIMSz_8_F-9neeXs7ddfab9-26GHGnMlRshnOziYmjzuz_UiO"
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
-}
-
-def check_product(web):
-    response = requests.get(web, headers=HEADERS)
-
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, "html.parser")
-        
-        # Extract the price
-        price_element = soup.find("div", class_="priceView-hero-price priceView-customer-price")  # This class might change, inspect element in your browser
-        if price_element:
-            price = price_element.find("span").text.strip()
-            smallprice = price.split("$")[-1]
-        else:
-            price = "Price not found"
-        maxprice_element = soup.find("div", class_="pricing-price__regular-price sr-only")  # General class name
-        if maxprice_element:
-            global maxpricetext
-            maxpricetext = maxprice_element.text.strip()
-            trimmed_price = maxpricetext.split("$")[-1]  # Extracts the part after "$"
-            saving = f"${trimmed_price}"
-        else:
-            saving = "No Savings"
-        if saving == "No Savings":
-            return f"💰 Price: **{price}**\n🔗 [Product Link]({web})"
-        else:
-            high_price = f"${float(trimmed_price) - float(smallprice)}"
-            return f"⬇️ Price: **{price}**\n\n💥 Saving: **{high_price}**\n⬆️ Original Price: **{saving}**\n🔗 [Product Link]({web})"
-
+async def slots(ctx, bet: int = 10):
+    global money
+    slot1 = 0
+    slot2 = 0
+    slot3 = 0
+    await ctx.send("|V|V|V|")
+    msg = await ctx.send("|0|0|0|")
+    await ctx.send("|V|V|V|")
+    time.sleep(.3)
+    slot1 = random.randint(1, 5)
+    await msg.edit(content=f"|{slot1}|0|0|")
+    time.sleep(.3)
+    slot2 = random.randint(1, 5)
+    await msg.edit(content=f"|{slot1}|{slot2}|0|")
+    time.sleep(.3)
+    slot3 = random.randint(1, 5)
+    await msg.edit(content=f"|{slot1}|{slot2}|{slot3}|")
+    time.sleep(.3)
+    if slot1 == slot2 and slot2 == slot3:
+        await ctx.send(f"YOU WON!!!! +{bet}")
+        money += bet
+        await ctx.send(f"Money: {money}")
     else:
-        return f"⚠️ Error fetching product page (Status Code: {response.status_code})"
+        await ctx.send(f"You Lost ;( -{bet}")
+        money -= bet
+        await ctx.send(f"Money: {money}")
 
 
 
-def send_webhook_message(message):
-    data = {"content": message}
-    requests.post(WEBHOOK_URL, data=json.dumps(data), headers={"Content-Type": "application/json"})
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import asyncio
 
 
-def is_real_link(url):
+# Function to search Best Buy and scrape product details
+def bestbuy_search_and_scrape(query):
+    driver = webdriver.Safari()  # ✅ Uses Safari WebDriver
+    driver.get("https://www.bestbuy.com/")
+
     try:
-        response = requests.head(url, allow_redirects=True, timeout=5)
-        return response.status_code == 200
-    except requests.RequestException:
-        return False
-    
+        # ✅ Find search box and type query
+        search_box = WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.ID, "gh-search-input"))
+        )
+        search_box.send_keys(query)
+        search_box.send_keys(Keys.RETURN)
+        time.sleep(1)
+        search_box.send_keys(Keys.RETURN)  # Press Enter
+
+        # ✅ Wait for search results to load
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".sku-item"))
+        )
+        time.sleep(1)
+        # ✅ Get first product link
+        first_product = driver.find_element(By.CSS_SELECTOR, ".sku-item .sku-title a")
+        product_name = first_product.text
+        product_link = first_product.get_attribute("href")
+
+        # ✅ Click the first product
+        driver.get(product_link)
+
+        # ✅ Wait for product page to load
+        WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.TAG_NAME, "h1"))
+        )
+
+        # ✅ Extract product name (double-checking in case layout changes)
+        product_name = driver.find_element(By.TAG_NAME, "h1").text
+
+        # ✅ Extract product price (fixes price selector issue)
+        try:
+            product_price = driver.find_element(By.CSS_SELECTOR, '[data-testid="customer-price"]').text
+        except:
+            product_price = "Price not found"
+
+    except Exception as e:
+        product_name = f"Error: {e}"
+        product_link = ""
+        product_price = ""
+
+    driver.quit()  # Close Safari
+    return product_name, product_link, product_price
 
 @bot.command()
-async def repeatcheck(ctx, user: discord.Member, limit: int = 10):
-    """Fetch past messages from a specific user."""
-    async for message in ctx.channel.history(limit=100):  # Fetch more to filter
-        price = message.content.split("Price: $")[-1]
-        if price == maxpricetext:
-            return True
-        
-def product_check_loop():
-    global result
-    while True:
-        lastresult = result
-        result = check_product(website)
-        if lastresult != result:
-            send_webhook_message(result)
-        time.sleep(300)  # Wait 5 minutes before checking again
+async def bestbuy(ctx, *, query: str):
+    """Search Best Buy, get first product name & price"""
+    await ctx.send(f"🔎 Searching Best Buy for: `{query}`...")
 
-# Start the product check in a separate thread
-threading.Thread(target=product_check_loop, daemon=True).start()
+    # Run Selenium in a separate thread
+    loop = asyncio.get_event_loop()
+    product_name, product_link, product_price = await loop.run_in_executor(None, bestbuy_search_and_scrape, query)
+
+    if product_link:
+        await ctx.send(f"**Product:** [{product_name}]({product_link})\n**Price:** {product_price}")
+    else:
+        await ctx.send(f"**Error:** {product_name}")
 
 # Run the bot
 bot.run("")
