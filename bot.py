@@ -15,10 +15,45 @@ bot = discord.Bot(intents=intents)
 # Initialize streaks and money
 streaks = {}
 money = {}
+doublenum = 2
+doubled = True
+dmsg = ""
+class MyView(discord.ui.View):
+    @discord.ui.button(label="Double", style=discord.ButtonStyle.primary, disabled=False)
+    async def button_callback(self, button, interaction):
+        global doublenum
+        global dmsg
+        dorn = random.randint(0, 5)
+        if dorn == 2:
+            await dmsg.edit(content=f"YOU LOST AT {doublenum}")
+            button.disabled = True
+        else:
+            doublenum *= 2
+            await dmsg.edit(content=f"{doublenum}")
+            
+        await interaction.response.edit_message(view=self)
+
+
+@bot.slash_command()
+async def button(ctx):
+    global dmsg
+    global doublenum
+    doublenum = 2
+    dmsg = await ctx.respond("Double or Nothing", view=MyView())
 
 @bot.event
 async def on_ready():
     print(f"✅ Logged in as {bot.user}")
+
+@bot.event
+async def on_message(message):
+    # Don't respond to ourselves
+    if message.author == bot.user:
+        return
+
+    # Check if the bot is mentioned
+    if bot.user in message.mentions:
+        await message.channel.send(f"KYS {message.author.mention}")
 
 # Slash Commands Below
 
@@ -45,45 +80,46 @@ async def divi(ctx, a: int, b: int):
     else:
         await ctx.respond(f"The quotient is {a // b}")
 
+
 @bot.slash_command(description="Russian Roulette")
 async def rr(ctx):
+    await ctx.defer()
+
     user = ctx.author
-    user_eliminated = random.randint(1, 6) == 1
-    bot_eliminated = random.randint(1, 6) == 1
+    bullet_spot = random.randint(1, 6)
+    chamber = 6
+    shot = False
+    player = True
 
-    result_message = []
+    for i in range(6):
+        if shot:
+            break
 
-    if user_eliminated:
-        result_message.append(f'💥🔫 BANG! {user.mention} lost!')
-        streaks[user.id] = 0  # Reset streak if user loses
-    else:
-        result_message.append(f"🔫 *click*... {user.mention} survived! 🔥")
-        streaks[user.id] = streaks.get(user.id, 0) + 1  # Increment streak
+        if player:
+            if chamber == bullet_spot:
+                await ctx.send(f'💥🔫 BANG! {user.mention} lost!')
+                shot = True
+            else:
+                await ctx.send(f"💨🔫 *click*... {user.mention} survived! 🔥")
+                player = False
+        else:
+            if chamber == bullet_spot:
+                await ctx.send(f'💥🔫 BANG! The bot lost!')
+                shot = True
+            else:
+                await ctx.followup.send(f"💨🔫 *click*... Bot survived!")
+                player = True
 
-    if bot_eliminated:
-        result_message.append(f'💥🔫 BANG! The bot lost!')
-    else:
-        result_message.append(f"🔫 *click*... One less in the chamber.")
+        chamber -= 1
+        await asyncio.sleep(0.5)
 
-    await ctx.respond("\n".join(result_message))
-
-@bot.slash_command(description="Check your roulette streak")
-async def streak(ctx):
-    user = ctx.author
-    user_streak = streaks.get(user.id, 0)
-    await ctx.respond(f"{user.mention}, your survival streak is {user_streak}!")
+    await ctx.followup.send("🎮 GAME OVER")
 
 @bot.slash_command(description="Play slots")
 async def slots(ctx, bet: int = 10):
     user = ctx.author
     if user.id not in money:
         money[user.id] = 1000  # Initialize money for the user if not present
-
-    current_money = money[user.id]
-
-    if bet > current_money:
-        await ctx.respond(f"❌ You don't have enough money to bet {bet}. Current balance: {current_money}")
-        return
 
     msg = await ctx.respond("|V|V|V|")
     await asyncio.sleep(0.3)
@@ -106,6 +142,27 @@ async def slots(ctx, bet: int = 10):
     else:
         money[user.id] -= bet
         await ctx.send(f"💀 You lost. -{bet}\nNew balance: {money[user.id]}")
+heads = 0
+tails = 0
+@bot.slash_command(description="Flip a Coin")
+async def flip(ctx):
+    global tails
+    global heads
+    hort = random.randint(0, 1)
+    if hort == 0:
+        await ctx.respond("Tails")
+        tails += 1
+    elif hort == 1:
+        await ctx.respond("Heads")
+        heads += 1
+    else:
+        await ctx.respond("Landed on the side")
+@bot.slash_command(description="Flip a Coin")
+async def checkflip(ctx):
+    global tails
+    global heads
+    await ctx.respond(f"Tails amount: {tails}, Heads amount: {heads}")
+
 
 # Best Buy Scraper
 
@@ -142,16 +199,78 @@ def bestbuy_search_and_scrape(query):
     driver.quit()
     return product_name, product_link, product_price
 
+
+def newegg_search_and_scrape(query):
+    driver = webdriver.Safari()  # Or switch to Chrome if needed
+    try:
+        driver.get("https://www.newegg.com/")
+        
+        # Close the pop-up if it appears
+        try:
+            close_button = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, "close"))
+            )
+            close_button.click()
+        except:
+            pass  # No popup
+
+        # Search
+        search_box = WebDriverWait(driver, 10).until(
+           EC.presence_of_element_located((By.CSS_SELECTOR, '[title="Search Site"]'))
+        )
+        search_box.send_keys(query)
+        time.sleep(2)
+        search_box.send_keys(Keys.RETURN)
+
+        # Wait for search results
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".item-cell"))
+        )
+        time.sleep(2)
+
+        # First product
+        first_product = driver.find_element(By.CSS_SELECTOR, ".item-cell")
+
+        # Product link
+        product_link = first_product.find_element(By.CSS_SELECTOR, "a.item-title").get_attribute("href")
+
+        # Product price (may be in several spans)
+        try:
+            price_whole = first_product.find_element(By.CSS_SELECTOR, ".price-current strong").text
+            price_fraction = first_product.find_element(By.CSS_SELECTOR, ".price-current sup").text
+            product_price = f"${price_whole}{price_fraction}"
+        except:
+            product_price = "Price not found"
+
+    except Exception as e:
+        print("Error:", e)
+        product_link = ""
+        product_price = ""
+    finally:
+        driver.quit()
+
+    return product_link, product_price
+
 @bot.slash_command(description="Search Best Buy and get the first result")
-async def bestbuy(ctx, *, query: str):
-    await ctx.respond(f"🔎 Searching Best Buy for `{query}`...")
+async def search(ctx, *, query: str):
+    await ctx.respond(f"🔎 Searching Best Buy and Newegg for `{query}`...")
     loop = asyncio.get_event_loop()
     name, link, price = await loop.run_in_executor(None, bestbuy_search_and_scrape, query)
 
     if link:
-        await ctx.send(f"**Product:** [{name}]({link})\n**Price:** {price}")
+        await ctx.send(f"**Bestbuy Product:** [{name}]({link})\n**Bestbuy Price:** {price}")
     else:
         await ctx.send(f"❌ Error: {name}")
+    
+    loop = asyncio.get_event_loop()
+    link, price = await loop.run_in_executor(None, newegg_search_and_scrape, query)
+
+    if link:
+        await ctx.send(f"**Newegg Product:** ({link})\n**Newegg Price:** {price}")
+    else:
+        await ctx.send(f"❌ Error: {name}")
+
+    await ctx.send(f"**Prices could be from diffent products because search is too broad**")
 
 
 
