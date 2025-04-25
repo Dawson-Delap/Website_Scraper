@@ -18,7 +18,7 @@ money = {}
 doublenum = 2
 doubled = True
 dmsg = ""
-class MyView(discord.ui.View):
+class DoubleView(discord.ui.View):
     @discord.ui.button(label="Double", style=discord.ButtonStyle.primary, disabled=False)
     async def button_callback(self, button, interaction):
         global doublenum
@@ -35,11 +35,11 @@ class MyView(discord.ui.View):
 
 
 @bot.slash_command()
-async def button(ctx):
+async def doubleornothing(ctx):
     global dmsg
     global doublenum
     doublenum = 2
-    dmsg = await ctx.respond("Double or Nothing", view=MyView())
+    dmsg = await ctx.respond("Double or Nothing", view=DoubleView())
 
 @bot.event
 async def on_ready():
