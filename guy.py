@@ -1,6 +1,7 @@
 import discord
 import random
 import asyncio
+import datetime
 
 # Set intents and initialize bot
 intents = discord.Intents.default()
@@ -8,10 +9,35 @@ bot = discord.Bot(intents=intents)
 
 @bot.event
 async def on_message(message):
+    respond = random.randint(0,100)
+    if respond == 34:
+        whatPic = random.randint(0,2)
+        if whatPic == 0:
+            await message.channel.send(f"https://tenor.com/view/flightreacts-flight-spin-flight-driving-driving-gif-14821482636596098762")
+        elif whatPic == 1:
+            await message.channel.send(f"https://tenor.com/view/flight-waffle-house-waffle-house-flightreacts-gif-291001867069513835")
+        elif whatPic == 2:
+            await message.channel.send(f"https://tenor.com/view/flight-shoe-gif-1842982099687274858")
     # Don't respond to ourselves
     if message.author == bot.user:
         return
+    if message.author.id == 810679946670112768 or message.author.id == 832086256350789642:
+        # Check if the message is inside a guild (server)
+        if message.guild:
+            try:
+                # Timeout the user for 5 minutes (300 seconds)
+                timeout_duration = datetime.timedelta(minutes=5)
 
+                await message.author.timeout_for(timeout_duration)
+
+                await message.channel.send(
+                    f"{message.author.mention} has been timed out for 5 minutes!"
+                )
+
+            except discord.Forbidden:
+                await message.channel.send("I don't have permission to timeout this user!")
+            except Exception as e:
+                await message.channel.send(f"Error: {e}")
     # Check if the bot is mentioned
     if bot.user in message.mentions:
         await message.channel.send(f"KYS {message.author.mention}")
@@ -22,15 +48,8 @@ async def on_message(message):
             await message.channel.send(f"https://tenor.com/view/flight-waffle-house-waffle-house-flightreacts-gif-291001867069513835")
         elif whatPic == 2:
             await message.channel.send(f"https://tenor.com/view/flight-shoe-gif-1842982099687274858")
-    respond = random.randint(0,100)
-    if respond == 34:
-        whatPic = random.randint(0,2)
-        if whatPic == 0:
-            await message.channel.send(f"https://tenor.com/view/flightreacts-flight-spin-flight-driving-driving-gif-14821482636596098762")
-        elif whatPic == 1:
-            await message.channel.send(f"https://tenor.com/view/flight-waffle-house-waffle-house-flightreacts-gif-291001867069513835")
-        elif whatPic == 2:
-            await message.channel.send(f"https://tenor.com/view/flight-shoe-gif-1842982099687274858")
+    
+    
 
 # Initialize streaks and money
 streaks = {}
