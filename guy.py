@@ -6,18 +6,26 @@ import datetime
 # Set intents and initialize bot
 intents = discord.Intents.default()
 bot = discord.Bot(intents=intents)
-
+allowed_mentions=discord.AllowedMentions(everyone=True)
 @bot.event
 async def on_message(message):
     respond = random.randint(0,100)
     if respond == 34:
-        whatPic = random.randint(0,2)
+        whatPic = random.randint(0,5)
         if whatPic == 0:
             await message.channel.send(f"https://tenor.com/view/flightreacts-flight-spin-flight-driving-driving-gif-14821482636596098762")
         elif whatPic == 1:
             await message.channel.send(f"https://tenor.com/view/flight-waffle-house-waffle-house-flightreacts-gif-291001867069513835")
         elif whatPic == 2:
             await message.channel.send(f"https://tenor.com/view/flight-shoe-gif-1842982099687274858")
+        elif whatPic == 3:
+            await message.channel.send(f"https://tenor.com/view/yh-gif-25406060")
+        elif whatPic == 4:
+            await message.channel.send(f"https://tenor.com/view/nerd-emoji-nerd-emoji-avalon-play-avalon-gif-24241051")
+        elif whatPic == 5:
+            await message.channel.send(f"https://tenor.com/view/low-tier-god-awesome-mario-twerking-gif-23644561")
+            
+            
     # Don't respond to ourselves
     if message.author == bot.user:
         return
@@ -26,28 +34,37 @@ async def on_message(message):
         if message.guild:
             try:
                 # Timeout the user for 5 minutes (300 seconds)
-                timeout_duration = datetime.timedelta(minutes=5)
+                timeout_duration = datetime.timedelta(minutes=1)
 
                 await message.author.timeout_for(timeout_duration)
 
                 await message.channel.send(
-                    f"{message.author.mention} has been timed out for 5 minutes!"
+                    f"KYS {message.author.mention}"
                 )
 
             except discord.Forbidden:
                 await message.channel.send("I don't have permission to timeout this user!")
             except Exception as e:
                 await message.channel.send(f"Error: {e}")
+    if message.author.id == 984333768976367726:
+        message.channel.send("@everyone Logan Has Returned!!!")
     # Check if the bot is mentioned
     if bot.user in message.mentions:
         await message.channel.send(f"KYS {message.author.mention}")
-        whatPic = random.randint(0,2)
+        whatPic = random.randint(0,5)
         if whatPic == 0:
             await message.channel.send(f"https://tenor.com/view/flightreacts-flight-spin-flight-driving-driving-gif-14821482636596098762")
         elif whatPic == 1:
             await message.channel.send(f"https://tenor.com/view/flight-waffle-house-waffle-house-flightreacts-gif-291001867069513835")
         elif whatPic == 2:
             await message.channel.send(f"https://tenor.com/view/flight-shoe-gif-1842982099687274858")
+        elif whatPic == 3:
+            await message.channel.send(f"https://tenor.com/view/yh-gif-25406060")
+        elif whatPic == 4:
+            await message.channel.send(f"https://tenor.com/view/nerd-emoji-nerd-emoji-avalon-play-avalon-gif-24241051")
+        elif whatPic == 5:
+            await message.channel.send(f"https://tenor.com/view/low-tier-god-awesome-mario-twerking-gif-23644561")
+            
     
     
 
@@ -55,6 +72,73 @@ async def on_message(message):
 streaks = {}
 money = {}
 
+@bot.slash_command(description="low tier god")
+async def kys(ctx):
+    voice_channel = bot.get_channel(1353827847818711050)
+    try:
+        vc = await voice_channel.connect()
+        vc.play(discord.FFmpegPCMAudio("Now.mp3"))
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+    except discord.ClientException as e:
+        await ctx.followup.send(f"Error: {e}", ephemeral=True)
+
+
+@bot.slash_command(description="laugh")
+async def laugh(ctx):
+    voice_channel = bot.get_channel(1353827847818711050)
+    try:
+        vc = await voice_channel.connect()
+        vc.play(discord.FFmpegPCMAudio("goof.mp3"))
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+    except discord.ClientException as e:
+        await ctx.followup.send(f"Error: {e}", ephemeral=True)
+
+@bot.slash_command(description="adlib")
+async def ahh(ctx):
+    voice_channel = bot.get_channel(1353827847818711050)
+    try:
+        vc = await voice_channel.connect()
+        vc.play(discord.FFmpegPCMAudio("AHH Adlib.mp3"))
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+    except discord.ClientException as e:
+        await ctx.followup.send(f"Error: {e}", ephemeral=True)
+@bot.slash_command(description="random")
+async def ranplay(ctx):
+    voice_channel = bot.get_channel(1353827847818711050)
+    ranSound = random.randint(0,5)
+    try:
+        vc = await voice_channel.connect()
+        if ranSound == 0:
+            vc.play(discord.FFmpegPCMAudio("Now.mp3"))
+        if ranSound == 1:
+            vc.play(discord.FFmpegPCMAudio("goof.mp3"))
+        if ranSound == 2:
+            vc.play(discord.FFmpegPCMAudio("Ghost.mp3"))
+        if ranSound == 3:
+            vc.play(discord.FFmpegPCMAudio("Kenny Scream.mp3"))
+        if ranSound == 4:
+            vc.play(discord.FFmpegPCMAudio("Speed.mp3"))
+        if ranSound == 5:
+            vc.play(discord.FFmpegPCMAudio("AHH adlib.mp3"))
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+    except discord.ClientException as e:
+        await ctx.followup.send(f"Error: {e}", ephemeral=True)
 
 
 doublenum = 2
