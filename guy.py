@@ -71,17 +71,26 @@ async def on_message(message):
 # Initialize streaks and money
 streaks = {}
 money = {}
-
+voice_channel = bot.get_channel(1353827847818711050)
+@bot.slash_command(description="laugh")
+async def vc(ctx, newvc: str = 1353827847818711050):
+    global voice_channel
+    newvc = int(newvc)
+    print(newvc)
+    #1365410616113889335
+    voice_channel = bot.get_channel(newvc)
+    await ctx.respond(f"Changed vc to {voice_channel}", ephemeral=True)
 @bot.slash_command(description="low tier god")
 async def kys(ctx):
-    voice_channel = bot.get_channel(1353827847818711050)
+    global voice_channel
     try:
         vc = await voice_channel.connect()
         vc.play(discord.FFmpegPCMAudio("Now.mp3"))
         while vc.is_playing():
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
         await vc.disconnect()
+        await ctx.respond(f"played sound", ephemeral=True)
 
     except discord.ClientException as e:
         await ctx.followup.send(f"Error: {e}", ephemeral=True)
@@ -89,34 +98,36 @@ async def kys(ctx):
 
 @bot.slash_command(description="laugh")
 async def laugh(ctx):
-    voice_channel = bot.get_channel(1353827847818711050)
+    global voice_channel
     try:
         vc = await voice_channel.connect()
         vc.play(discord.FFmpegPCMAudio("goof.mp3"))
         while vc.is_playing():
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
         await vc.disconnect()
+        await ctx.respond(f"played sound", ephemeral=True)
 
     except discord.ClientException as e:
         await ctx.followup.send(f"Error: {e}", ephemeral=True)
 
 @bot.slash_command(description="adlib")
 async def ahh(ctx):
-    voice_channel = bot.get_channel(1353827847818711050)
+    global voice_channel
     try:
         vc = await voice_channel.connect()
         vc.play(discord.FFmpegPCMAudio("AHH Adlib.mp3"))
         while vc.is_playing():
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
         await vc.disconnect()
+        await ctx.respond(f"played sound", ephemeral=True)
 
     except discord.ClientException as e:
         await ctx.followup.send(f"Error: {e}", ephemeral=True)
 @bot.slash_command(description="random")
 async def ranplay(ctx):
-    voice_channel = bot.get_channel(1353827847818711050)
+    global voice_channel
     ranSound = random.randint(0,5)
     try:
         vc = await voice_channel.connect()
@@ -133,9 +144,10 @@ async def ranplay(ctx):
         if ranSound == 5:
             vc.play(discord.FFmpegPCMAudio("AHH adlib.mp3"))
         while vc.is_playing():
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
         await vc.disconnect()
+        await ctx.respond(f"played sound", ephemeral=True)
 
     except discord.ClientException as e:
         await ctx.followup.send(f"Error: {e}", ephemeral=True)
