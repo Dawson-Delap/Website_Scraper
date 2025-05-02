@@ -7,6 +7,7 @@ import datetime
 intents = discord.Intents.default()
 bot = discord.Bot(intents=intents)
 allowed_mentions=discord.AllowedMentions(everyone=True)
+intents.message_content = True
 @bot.event
 async def on_message(message):
     respond = random.randint(0,100)
@@ -30,22 +31,11 @@ async def on_message(message):
     if message.author == bot.user:
         return
     if message.author.id == 810679946670112768 or message.author.id == 832086256350789642:
-        # Check if the message is inside a guild (server)
-        if message.guild:
-            try:
-                # Timeout the user for 5 minutes (300 seconds)
-                timeout_duration = datetime.timedelta(minutes=1)
+        await message.delete()
+        
+    if "emma" in message.content.lower():
+        await message.delete()
 
-                await message.author.timeout_for(timeout_duration)
-
-                await message.channel.send(
-                    f"KYS {message.author.mention}"
-                )
-
-            except discord.Forbidden:
-                await message.channel.send("I don't have permission to timeout this user!")
-            except Exception as e:
-                await message.channel.send(f"Error: {e}")
     if message.author.id == 984333768976367726:
         message.channel.send("@everyone Logan Has Returned!!!")
     # Check if the bot is mentioned
